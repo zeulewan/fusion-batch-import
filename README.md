@@ -12,29 +12,27 @@ Bulk import `.f3d` files from a local folder into Fusion 360's Data Panel, prese
 
 ## Installation
 
-### Method 1: Copy to Scripts Folder (Recommended)
+### Easy Install (Recommended)
+
+1. Install the free [GitHubToFusion360](https://apps.autodesk.com/FUSION/en/Detail/Index?id=789800822168335025) app from Autodesk App Store
+2. In Fusion 360, press `Shift+S` to open Scripts and Add-Ins
+3. Find and run **GitHubToFusion360**
+4. Paste this URL: `https://github.com/zeulewan/fusion-bulk-library-importer`
+5. Click Install - done!
+
+### Manual Install
+
+**Option A: Copy to Scripts Folder**
 
 1. Download or clone this repository
 2. Copy the entire `BulkLibraryImporter` folder to your Fusion 360 Scripts directory:
 
-   **macOS:**
-   ```
-   ~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/
-   ```
+   - **macOS:** `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`
+   - **Windows:** `%appdata%\Autodesk\Autodesk Fusion 360\API\Scripts\`
 
-   Quick copy command (macOS):
-   ```bash
-   cp -r /Users/zeul/GIT/BulkLibraryImporter ~/Library/Application\ Support/Autodesk/Autodesk\ Fusion\ 360/API/Scripts/
-   ```
+3. Restart Fusion 360
 
-   **Windows:**
-   ```
-   %appdata%\Autodesk\Autodesk Fusion 360\API\Scripts\
-   ```
-
-3. Restart Fusion 360 (or refresh scripts)
-
-### Method 2: Run Directly
+**Option B: Add Script Manually**
 
 1. Open Fusion 360
 2. Go to **Utilities** > **Scripts and Add-Ins** (or press `Shift+S`)

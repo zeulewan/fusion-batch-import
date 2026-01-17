@@ -45,37 +45,19 @@ def get_destination_folder(ui: adsk.core.UserInterface, app: adsk.core.Applicati
     return None
 
 
-def scan_folder(source_path: str) -> tuple:
+def scan_folder(source_path: str) -> list:
     """
     Recursively scan source folder for .f3d files.
 
     Returns:
-        tuple: (folders_list, files_list)
-            - folders_list: List of relative folder paths to create
-            - files_list: List of (relative_path, absolute_path) for .f3d files
+        list: List of (relative_path, absolute_path) for .f3d files
     """
-    folders = set()
     files = []
-
     top_folder_name = os.path.basename(source_path)
 
     for root, dirs, filenames in os.walk(source_path):
-        # Calculate relative path from source
         rel_root = os.path.relpath(root, source_path)
 
-        # Add all directory paths (including intermediate ones)
-        if rel_root != '.':
-            # Include top folder name in path
-            folder_path = os.path.join(top_folder_name, rel_root)
-            folders.add(folder_path)
-            # Also add all parent folders
-            parts = folder_path.split(os.sep)
-            for i in range(1, len(parts) + 1):
-                folders.add(os.sep.join(parts[:i]))
-        else:
-            folders.add(top_folder_name)
-
-        # Add .f3d files
         for filename in filenames:
             if filename.lower().endswith('.f3d'):
                 abs_path = os.path.join(root, filename)
@@ -85,10 +67,7 @@ def scan_folder(source_path: str) -> tuple:
                     rel_path = os.path.join(top_folder_name, filename)
                 files.append((rel_path, abs_path))
 
-    # Sort folders by depth (create parent folders first)
-    sorted_folders = sorted(list(folders), key=lambda x: x.count(os.sep))
-
-    return sorted_folders, files
+    return files
 
 
 def check_conflict(dest_folder: adsk.core.DataFolder, folder_name: str) -> bool:
@@ -139,11 +118,10 @@ def ensure_folder_path(root_folder: adsk.core.DataFolder, rel_path: str) -> adsk
 def upload_files(
     ui: adsk.core.UserInterface,
     dest_root: adsk.core.DataFolder,
-    folders: list,
     files: list
 ) -> tuple:
     """
-    Create folder structure and upload .f3d files with progress tracking.
+    Upload .f3d files with progress tracking. Creates folders lazily as needed.
 
     Returns:
         tuple: (success_count, errors_list)
@@ -151,6 +129,7 @@ def upload_files(
     total_files = len(files)
     success_count = 0
     errors = []
+    folder_cache = {}  # Cache created folders to avoid redundant API calls
 
     # Create progress dialog
     progress = ui.createProgressDialog()
@@ -158,38 +137,6 @@ def upload_files(
     progress.isBackgroundTranslucent = False
     progress.isCancelButtonShown = True
 
-    # Phase 1: Create folder structure
-    progress.show(
-        "Creating Folder Structure",
-        f"Creating {len(folders)} folders...",
-        0, len(folders), 0
-    )
-
-    folder_cache = {}  # Cache created folders for faster lookup
-
-    for i, folder_path in enumerate(folders):
-        if progress.wasCancelled:
-            progress.hide()
-            return success_count, ["Import cancelled by user"]
-
-        try:
-            folder = ensure_folder_path(dest_root, folder_path)
-            folder_cache[folder_path] = folder
-        except Exception as e:
-            errors.append(f"Folder '{folder_path}': {str(e)}")
-
-        progress.progressValue = i + 1
-        progress.message = f"Creating folder: {os.path.basename(folder_path)}"
-
-        # Allow UI to update
-        adsk.doEvents()
-
-    progress.hide()
-
-    if not files:
-        return success_count, errors
-
-    # Phase 2: Upload files
     progress.show(
         "Importing Library",
         f"Importing 0/{total_files} files...",
@@ -206,7 +153,7 @@ def upload_files(
             # Get parent folder path
             parent_rel = os.path.dirname(rel_path)
 
-            # Get target folder from cache or create
+            # Get target folder from cache or create lazily
             if parent_rel in folder_cache:
                 target_folder = folder_cache[parent_rel]
             else:
@@ -273,7 +220,7 @@ def run(context):
 
         # Step 3: Scan source folder
         top_folder_name = os.path.basename(source)
-        folders, files = scan_folder(source)
+        files = scan_folder(source)
 
         if not files:
             ui.messageBox(
@@ -302,8 +249,7 @@ def run(context):
         result = ui.messageBox(
             f"Ready to import:\n\n"
             f"Source: {source}\n"
-            f"Files: {len(files)} .f3d files\n"
-            f"Folders: {len(folders)} folders to create\n\n"
+            f"Files: {len(files)} .f3d files\n\n"
             f"Continue with import?",
             "Confirm Import",
             adsk.core.MessageBoxButtonTypes.YesNoButtonType,
@@ -312,8 +258,8 @@ def run(context):
         if result != adsk.core.DialogResults.DialogYes:
             return
 
-        # Step 6: Perform import
-        success_count, errors = upload_files(ui, dest, folders, files)
+        # Step 6: Perform import (folders created lazily as needed)
+        success_count, errors = upload_files(ui, dest, files)
 
         # Step 7: Show summary
         if errors:
@@ -333,7 +279,6 @@ def run(context):
             ui.messageBox(
                 f"Script finished!\n\n"
                 f"Queued: {success_count} files\n"
-                f"Created: {len(folders)} folders\n\n"
                 f"Location: {top_folder_name}/\n\n"
                 "Uploads are processing in the background.\n"
                 "Large libraries may take a while to fully appear in the Data Panel.",
