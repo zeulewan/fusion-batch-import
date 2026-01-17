@@ -6,7 +6,7 @@
     "description": {
         "": "Bulk import .f3d files from a local folder into Fusion 360 Data Panel, preserving folder structure. Universal tool optimized for VEX robotics CAD libraries."
     },
-    "version": "1.0.0",
+    "version": "0.0.2",
     "runOnStartup": false,
     "supportedOS": "windows|mac",
     "editEnabled": true
