@@ -83,7 +83,7 @@ This tool was built for the [VEX-CAD-Fusion-360-Library](https://github.com/vind
 2. Extract the ZIP file
 3. Run this script and select the extracted folder
 4. All VEX parts will be imported with proper organization
-5. Script takes ~2 mins to run, and another 5 or 10 for all the uploads to process.
+5. Script takes ~7 mins to run, then about 2 mins for the uploads to process.
 
 ## Notes
 
