@@ -1,14 +1,15 @@
-# Bulk Library Importer for Fusion 360
+# Fusion Batch Import for Fusion 360
 
-Bulk import `.f3d` files from a local folder into Fusion 360's Data Panel, preserving the complete folder structure. Universal tool that works with any CAD library, optimized for VEX robotics.
+Bulk import `.f3d` files from a local folder into Fusion 360's Data Panel, preserving the complete folder structure.
+Originally built for the [VEX robotics](https://github.com/vindou/VEX-CAD-Fusion-360-Library) library.
 
-## Features
+## Contents
 
-- **Recursive Import**: Imports all `.f3d` files from a folder and all subfolders
-- **Structure Preservation**: Recreates the exact folder hierarchy in the Data Panel
-- **Progress Tracking**: Real-time progress bar showing import status
-- **Conflict Detection**: Warns if destination folder already exists
-- **Error Handling**: Graceful handling of failed imports with detailed summary
+- [Installation](#installation)
+- [Usage](#usage)
+- [VEX CAD Library](#vex-cad-library)
+- [Notes](#notes)
+- [Troubleshooting](#troubleshooting)
 
 ## Installation
 
@@ -17,15 +18,15 @@ Bulk import `.f3d` files from a local folder into Fusion 360's Data Panel, prese
 1. Install the free [GitHubToFusion360](https://apps.autodesk.com/FUSION/en/Detail/Index?id=789800822168335025) app from Autodesk App Store
 2. In Fusion 360, press `Shift+S` to open Scripts and Add-Ins
 3. Find and run **GitHubToFusion360**
-4. Paste this URL: `https://github.com/zeulewan/fusion-bulk-library-importer`
-5. Click Install - done!
+4. Paste this URL: `https://github.com/zeulewan/fusion-batch-import`
+5. Click Install. Done
 
 ### Manual Install
 
 **Option A: Copy to Scripts Folder**
 
 1. Download or clone this repository
-2. Copy the entire `BulkLibraryImporter` folder to your Fusion 360 Scripts directory:
+2. Copy the entire `FusionBatchImport` folder to your Fusion 360 Scripts directory:
 
    - **macOS:** `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`
    - **Windows:** `%appdata%\Autodesk\Autodesk Fusion 360\API\Scripts\`
@@ -36,9 +37,10 @@ Bulk import `.f3d` files from a local folder into Fusion 360's Data Panel, prese
 
 1. Open Fusion 360
 2. Go to **Utilities** > **Scripts and Add-Ins** (or press `Shift+S`)
-3. Click the green **+** button next to "My Scripts"
-4. Navigate to and select the `BulkLibraryImporter` folder
+3. Click the **+** button next on the top left. Click `Script of add-in from device`.
+4. Navigate to and select the `FusionBatchImport` folder
 5. Click **Open**
+6. No need for restart
 
 ## Usage
 
@@ -63,7 +65,7 @@ Bulk import `.f3d` files from a local folder into Fusion 360's Data Panel, prese
 
 3. **Run the script**:
    - Go to **Utilities** > **Scripts and Add-Ins**
-   - Select **BulkLibraryImporter**
+   - Select **FusionBatchImport**
    - Click **Run**
 
 4. **Follow the prompts**:
@@ -75,45 +77,26 @@ Bulk import `.f3d` files from a local folder into Fusion 360's Data Panel, prese
 
 ## VEX CAD Library
 
-This tool is optimized for the [VEX-CAD-Fusion-360-Library](https://github.com/vindou/VEX-CAD-Fusion-360-Library):
+This tool was built for the [VEX-CAD-Fusion-360-Library](https://github.com/vindou/VEX-CAD-Fusion-360-Library):
 
 1. Download the library from GitHub
 2. Extract the ZIP file
 3. Run this script and select the extracted folder
 4. All VEX parts will be imported with proper organization
+5. Script takes ~2 mins to run, and another 5 or 10 for all the uploads to process.
 
-## Known Limitations
+## Notes
 
-1. **Async Uploads**: Files upload in the background after the script completes. Large libraries may take a few minutes to fully sync.
-
-2. **No Selective Import**: V1 imports everything in the folder. Future versions may add filtering.
-
-3. **Project Root Only**: Currently imports to the root of the active project. Subfolder destination selection coming in V2.
+1. Files upload in the background after the script completes. Large libraries may take a few minutes to fully sync.
+3. Currently imports to the root of the active project.
 
 ## Troubleshooting
 
-### "No active project found"
-- Open or create a project in the Data Panel before running the script
-
 ### "Upload failed" errors
-- Check your internet connection
+- Requires internet connection for API usage
 - Verify the `.f3d` files are valid Fusion 360 archives
 - Try importing a smaller batch
 
 ### Script doesn't appear
 - Ensure the folder contains both `.py` and `.manifest` files
 - Try restarting Fusion 360
-
-## Requirements
-
-- Autodesk Fusion 360 (any recent version)
-- macOS or Windows
-- No external dependencies (uses embedded Python)
-
-## License
-
-MIT License - Free to use, modify, and distribute.
-
-## Credits
-
-Created for the VEX robotics community.

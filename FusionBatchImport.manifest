@@ -1,0 +1,13 @@
+{
+    "autodeskProduct": "Fusion360",
+    "type": "script",
+    "id": "FusionBatchImport",
+    "author": "Zeul",
+    "description": {
+        "": "Batch import .f3d files from a local folder into Fusion 360 Data Panel, preserving folder structure."
+    },
+    "version": "0.0.3",
+    "runOnStartup": false,
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}
